@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import SurvivorController from './controllers/SurvivorController';
+import SurvivorController from './controllers/ProductController';
 
 const routes = Router();
 
