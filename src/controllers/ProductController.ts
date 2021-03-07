@@ -5,7 +5,7 @@ import * as Yup from 'yup';
 import productImages from '../models/productImages';
 
 export default {
-  async addProduct(request: Request, response: Response) {
+  async addStoreProduct(request: Request, response: Response) {
     const {
       name,
       category,
@@ -40,11 +40,11 @@ export default {
       description: Yup.string(),
       storePrice: Yup.number().required(),
       storeQuantity: Yup.number().required(),
-      storeUnit: Yup.number().required(),
+      storeUnit: Yup.string().required(),
       supplierPrice: Yup.number(),
       supplierQuantity: Yup.number(),
-      supplierUnit: Yup.number(),
-      dueDate: Yup.date(),
+      supplierUnit: Yup.string(),
+      dueDate: Yup.number(),
     });
 
     await schema.validate(data),
@@ -60,7 +60,7 @@ export default {
       .json({ message: `Product, ${name}, added to store!` });
   },
 
-  async updateProduct(request: Request, response: Response) {
+  async updateStoreProduct(request: Request, response: Response) {
     const id = parseInt(request.params.id);
     const updateStoreProduct = request.body;
 
@@ -77,7 +77,7 @@ export default {
       dueDate: Yup.date(),
     });
 
-    await schema.validate(update),
+    await schema.validate(updateStoreProduct),
       {
         abortEarly: false,
       };
@@ -88,25 +88,13 @@ export default {
     return response.json(updateStoreProduct);
   },
 
-  async getProduct(request: Request, response: Response) {
+  async getStoreProducts(request: Request, response: Response) {
     const id = parseInt(request.params.id);
 
-    const storeProductRepository = getRepository(Product);
-    await storeProductRepository.increment({ id: id }, 'infectedFlag', 1);
+    const storeProductRepository = getRepository(storeProduct);
 
-    const storeProduct = await storeProductRepository.preload({ id: id });
-
-    const infectedFlag = storeProduct?.infectedFlag;
-    let updateInfectedMark = storeProduct?.infectedMark;
-
-    if (infectedFlag) {
-      infectedFlag >= 4
-        ? (updateInfectedMark = true)
-        : (updateInfectedMark = false);
-    }
-    await storeProductRepository.update(id, {
-      infectedMark: updateInfectedMark,
-    });
+    const getStoreProduct = await storeProductRepository.query(`
+    SELECT * from storeProduct`);
 
     return response.json(storeProduct);
   },

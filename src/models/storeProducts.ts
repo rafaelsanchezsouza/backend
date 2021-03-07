@@ -1,7 +1,7 @@
 import { Entity, Column, PrimaryGeneratedColumn, OneToOne } from 'typeorm';
 import Image from './productImages';
 
-@Entity('products')
+@Entity('storeProducts')
 export default class Product {
   @PrimaryGeneratedColumn('increment')
   id: number;
