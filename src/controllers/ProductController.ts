@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
-import storeProduct from '../models/storeProducts';
+import storeProducts from '../models/storeProducts';
 import * as Yup from 'yup';
 import productImages from '../models/productImages';
 
@@ -19,7 +19,7 @@ export default {
       dueDate,
     } = request.body;
 
-    const storeProductRepository = getRepository(storeProduct);
+    const storeProductsRepository = getRepository(storeProducts);
 
     const data = {
       name,
@@ -52,8 +52,8 @@ export default {
         abortEarly: false,
       };
 
-    const newStoreProduct = storeProductRepository.create(data);
-    await storeProductRepository.save(newStoreProduct);
+    const newStoreProducts = storeProductsRepository.create(data);
+    await storeProductsRepository.save(newStoreProducts);
 
     return response
       .status(201)
@@ -62,7 +62,7 @@ export default {
 
   async updateStoreProduct(request: Request, response: Response) {
     const id = parseInt(request.params.id);
-    const updateStoreProduct = request.body;
+    const updateStoreProducts = request.body;
 
     const schema = Yup.object().shape({
       name: Yup.string(),
@@ -77,26 +77,24 @@ export default {
       dueDate: Yup.date(),
     });
 
-    await schema.validate(updateStoreProduct),
+    await schema.validate(updateStoreProducts),
       {
         abortEarly: false,
       };
 
-    const storeProductRepository = getRepository(storeProduct);
-    await storeProductRepository.update(id, updateStoreProduct);
+    const storeProductsRepository = getRepository(storeProducts);
+    await storeProductsRepository.update(id, updateStoreProducts);
 
-    return response.json(updateStoreProduct);
+    return response.json(updateStoreProducts);
   },
 
   async getStoreProducts(request: Request, response: Response) {
-    const id = parseInt(request.params.id);
+    const storeProductsRepository = getRepository(storeProducts);
 
-    const storeProductRepository = getRepository(storeProduct);
+    const getStoreProducts = await storeProductsRepository.query(`
+    SELECT * from storeProducts`);
 
-    const getStoreProduct = await storeProductRepository.query(`
-    SELECT * from storeProduct`);
-
-    return response.json(storeProduct);
+    return response.json(getStoreProducts);
   },
 
   // async showReport(request: Request, response: Response) {

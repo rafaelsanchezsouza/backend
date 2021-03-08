@@ -26,7 +26,7 @@ export default class Product {
   @Column()
   dueDate: string;
 
-  @OneToOne(() => Image, (image) => image.product, {
+  @OneToOne(() => Image, (image) => image.storeProduct, {
     cascade: ['insert', 'update'],
   })
   image: Image;
