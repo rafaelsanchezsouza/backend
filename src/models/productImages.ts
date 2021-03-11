@@ -5,7 +5,7 @@ import {
   OneToOne,
   JoinColumn,
 } from 'typeorm';
-import Product from './storeProducts';
+import storeProducts from './storeProducts';
 
 @Entity('productImages')
 export default class Image {
@@ -13,7 +13,7 @@ export default class Image {
   id: number;
   @Column()
   path: string;
-  @OneToOne(() => Product, (product) => product.image)
+  @OneToOne(() => storeProducts, (storeProduct) => storeProduct.image)
   @JoinColumn({ name: 'productId' })
-  product: Product;
+  storeProduct: storeProducts;
 }

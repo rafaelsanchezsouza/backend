@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 import storeProducts from '../models/storeProducts';
 import * as Yup from 'yup';
-import productImages from '../models/productImages';
 
 export default {
   async addStoreProduct(request: Request, response: Response) {
@@ -19,6 +18,9 @@ export default {
       dueDate,
     } = request.body;
 
+    const requestImage = request.file.filename;
+    const productImage = { path: requestImage };
+
     const storeProductsRepository = getRepository(storeProducts);
 
     const data = {
@@ -32,6 +34,7 @@ export default {
       supplierQuantity,
       supplierUnit,
       dueDate,
+      productImage,
     };
 
     const schema = Yup.object().shape({
@@ -40,11 +43,12 @@ export default {
       description: Yup.string(),
       storePrice: Yup.number().required(),
       storeQuantity: Yup.number().required(),
-      storeUnit: Yup.string().required(),
+      storeUnit: Yup.string(),
       supplierPrice: Yup.number(),
       supplierQuantity: Yup.number(),
       supplierUnit: Yup.string(),
       dueDate: Yup.number(),
+      image: Yup.object().shape({ path: Yup.string() }),
     });
 
     await schema.validate(data),
