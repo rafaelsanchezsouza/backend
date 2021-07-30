@@ -52,9 +52,9 @@ export default {
     });
 
     await schema.validate(data),
-      {
-        abortEarly: false,
-      };
+    {
+      abortEarly: false,
+    };
 
     const newStoreProducts = storeProductsRepository.create(data);
     await storeProductsRepository.save(newStoreProducts);
@@ -82,9 +82,9 @@ export default {
     });
 
     await schema.validate(updateStoreProducts),
-      {
-        abortEarly: false,
-      };
+    {
+      abortEarly: false,
+    };
 
     const storeProductsRepository = getRepository(storeProducts);
     await storeProductsRepository.update(id, updateStoreProducts);
@@ -92,7 +92,7 @@ export default {
     return response.json(updateStoreProducts);
   },
 
-  async getStoreProducts(request: Request, response: Response) {
+  async getAllStoreProducts(request: Request, response: Response) {
     const storeProductsRepository = getRepository(storeProducts);
 
     const getStoreProducts = await storeProductsRepository.query(`
@@ -101,7 +101,27 @@ export default {
     return response.json(getStoreProducts);
   },
 
-  // async showReport(request: Request, response: Response) {
+  async getStoreProductById(request: Request, response: Response) {
+    const storeProductId = parseInt(request.params.id);
 
-  // },
+    const storeProductsRepository = getRepository(storeProducts);
+
+    const storeProduct = await storeProductsRepository.find({ where: { storeProductId } })
+
+    return response.json(storeProduct)
+  },
+
+  async DeleteStoreProductById(request: Request, response: Response) {
+    const storeProductId = parseInt(request.params.id);
+
+    const storeProductsRepository = getRepository(storeProducts);
+
+    const storeProduct = await storeProductsRepository.findOne({ where: { storeProductId } })
+
+    if (storeProduct) {
+      await storeProductsRepository.delete(storeProduct)
+    }
+
+    return response.json(storeProduct)
+  }
 };
